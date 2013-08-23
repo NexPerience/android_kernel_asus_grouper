@@ -1,8 +1,8 @@
 VERSION = 3
 PATCHLEVEL = 1
-SUBLEVEL = 10
+SUBLEVEL = 15
 EXTRAVERSION =
-NAME = "Divemaster Edition"
+NAME = "XPERIENCE Google Edition"
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
