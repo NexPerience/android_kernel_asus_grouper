@@ -1,4 +1,4 @@
-/*
+/* 
  * Functions to sequence FLUSH and FUA writes.
  *
  * Copyright (C) 2011		Max Planck Institute for Gravitational Physics

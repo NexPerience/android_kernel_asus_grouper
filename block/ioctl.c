@@ -35,7 +35,7 @@ static int blkpg_ioctl(struct block_device *bdev, struct blkpg_ioctl_arg __user 
 		case BLKPG_ADD_PARTITION:
 			start = p.start >> 9;
 			length = p.length >> 9;
-			/* check for fit in a hd_struct */ 
+			/*  check for fit in a hd_struct */ 
 			if (sizeof(sector_t) == sizeof(long) && 
 			    sizeof(long long) > sizeof(long)) {
 				long pstart = start, plength = length;
@@ -46,7 +46,7 @@ static int blkpg_ioctl(struct block_device *bdev, struct blkpg_ioctl_arg __user 
 
 			mutex_lock(&bdev->bd_mutex);
 
-			/* overlap? */
+			/*  overlap? */
 			disk_part_iter_init(&piter, disk,
 					    DISK_PITER_INCL_EMPTY);
 			while ((part = disk_part_iter_next(&piter))) {
@@ -59,7 +59,7 @@ static int blkpg_ioctl(struct block_device *bdev, struct blkpg_ioctl_arg __user 
 			}
 			disk_part_iter_exit(&piter);
 
-			/* all seems OK */
+			/*  all seems OK */
 			part = add_partition(disk, partno, start, length,
 					     ADDPART_FLAG_NONE, NULL);
 			mutex_unlock(&bdev->bd_mutex);
@@ -80,7 +80,7 @@ static int blkpg_ioctl(struct block_device *bdev, struct blkpg_ioctl_arg __user 
 				bdput(bdevp);
 				return -EBUSY;
 			}
-			/* all seems OK */
+			/*  all seems OK */
 			fsync_bdev(bdevp);
 			invalidate_bdev(bdevp);
 
@@ -171,14 +171,14 @@ int __blkdev_driver_ioctl(struct block_device *bdev, fmode_t mode,
 
 	return -ENOTTY;
 }
-/*
+/* 
  * For the record: _GPL here is only because somebody decided to slap it
  * on the previous export.  Sheer idiocy, since it wasn't copyrightable
  * at all and could be open-coded without any exports by anybody who cares.
  */
 EXPORT_SYMBOL_GPL(__blkdev_driver_ioctl);
 
-/*
+/* 
  * always keep this in sync with compat_blkdev_ioctl()
  */
 int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
@@ -195,7 +195,7 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 			return -EACCES;
 
 		ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
-		/* -EINVAL to handle old uncorrected drivers */
+		/*  -EINVAL to handle old uncorrected drivers */
 		if (ret != -EINVAL && ret != -ENOTTY)
 			return ret;
 
@@ -205,7 +205,7 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 
 	case BLKROSET:
 		ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
-		/* -EINVAL to handle old uncorrected drivers */
+		/*  -EINVAL to handle old uncorrected drivers */
 		if (ret != -EINVAL && ret != -ENOTTY)
 			return ret;
 		if (!capable(CAP_SYS_ADMIN))
@@ -237,7 +237,7 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 		if (!disk->fops->getgeo)
 			return -ENOTTY;
 
-		/*
+		/* 
 		 * We need to set the startsect first, the driver may
 		 * want to override it.
 		 */
@@ -261,11 +261,11 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 		return put_long(arg, (bdi->ra_pages * PAGE_CACHE_SIZE) / 512);
 	case BLKROGET:
 		return put_int(arg, bdev_read_only(bdev) != 0);
-	case BLKBSZGET: /* get block device soft block size (cf. BLKSSZGET) */
+	case BLKBSZGET: /*  get block device soft block size (cf. BLKSSZGET) */
 		return put_int(arg, block_size(bdev));
-	case BLKSSZGET: /* get block device logical block size */
+	case BLKSSZGET: /*  get block device logical block size */
 		return put_int(arg, bdev_logical_block_size(bdev));
-	case BLKPBSZGET: /* get block device physical block size */
+	case BLKPBSZGET: /*  get block device physical block size */
 		return put_uint(arg, bdev_physical_block_size(bdev));
 	case BLKIOMIN:
 		return put_uint(arg, bdev_io_min(bdev));
@@ -287,7 +287,7 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 		bdi->ra_pages = (arg * 512) / PAGE_CACHE_SIZE;
 		return 0;
 	case BLKBSZSET:
-		/* set the logical block size */
+		/*  set the logical block size */
 		if (!capable(CAP_SYS_ADMIN))
 			return -EACCES;
 		if (!arg)

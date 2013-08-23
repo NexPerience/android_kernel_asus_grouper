@@ -1,4 +1,4 @@
-/*
+/* 
  * BFQ-v6r2 for 3.1.0: data structures and common functions prototypes.
  *
  * Based on ideas and code from CFQ:
@@ -30,7 +30,7 @@
 
 struct bfq_entity;
 
-/**
+/* *
  * struct bfq_service_tree - per ioprio_class service tree.
  * @active: tree for active entities (i.e., those backlogged).
  * @idle: tree for idle entities (i.e., those not backlogged, with V <= F_i).
@@ -55,7 +55,7 @@ struct bfq_service_tree {
 	unsigned long wsum;
 };
 
-/**
+/* *
  * struct bfq_sched_data - multi-class scheduler.
  * @active_entity: entity under service.
  * @next_active: head-of-the-line entity in the scheduler.
@@ -80,7 +80,7 @@ struct bfq_sched_data {
 	struct bfq_service_tree service_tree[BFQ_IOPRIO_CLASSES];
 };
 
-/**
+/* *
  * struct bfq_entity - schedulable entity.
  * @rb_node: service_tree member.
  * @on_st: flag, true if the entity is on a tree (either the active or
@@ -160,7 +160,7 @@ struct bfq_entity {
 
 struct bfq_group;
 
-/**
+/* *
  * struct bfq_queue - leaf schedulable entity.
  * @ref: reference counter.
  * @bfqd: parent bfq_data.
@@ -202,7 +202,7 @@ struct bfq_queue {
 	atomic_t ref;
 	struct bfq_data *bfqd;
 
-	/* fields for cooperating queues handling */
+	/*  fields for cooperating queues handling */
 	struct bfq_queue *new_bfqq;
 	struct rb_node pos_node;
 	struct rb_root *pos_root;
@@ -234,7 +234,7 @@ struct bfq_queue {
 
 	pid_t pid;
 
-	/* weight-raising fields */
+	/*  weight-raising fields */
 	unsigned int raising_cur_max_time;
 	u64 last_rais_start_finish, soft_rt_next_start;
 	unsigned int raising_coeff;
@@ -242,7 +242,7 @@ struct bfq_queue {
 	struct cfq_io_context *cic;
 };
 
-/**
+/* *
  * struct bfq_data - per device data structure.
  * @queue: request queue for the managed device.
  * @root_group: root bfq_group for the device.
@@ -363,7 +363,7 @@ struct bfq_data {
 
 	bool low_latency;
 
-	/* parameters of the low_latency heuristics */
+	/*  parameters of the low_latency heuristics */
 	unsigned int bfq_raising_coeff;
 	unsigned int bfq_raising_max_time;
 	unsigned int bfq_raising_rt_max_time;
@@ -376,18 +376,18 @@ struct bfq_data {
 };
 
 enum bfqq_state_flags {
-	BFQ_BFQQ_FLAG_busy = 0,		/* has requests or is under service */
-	BFQ_BFQQ_FLAG_wait_request,	/* waiting for a request */
-	BFQ_BFQQ_FLAG_must_alloc,	/* must be allowed rq alloc */
-	BFQ_BFQQ_FLAG_fifo_expire,	/* FIFO checked in this slice */
-	BFQ_BFQQ_FLAG_idle_window,	/* slice idling enabled */
-	BFQ_BFQQ_FLAG_prio_changed,	/* task priority has changed */
-	BFQ_BFQQ_FLAG_sync,		/* synchronous queue */
-	BFQ_BFQQ_FLAG_budget_new,	/* no completion with this budget */
-	BFQ_BFQQ_FLAG_coop,		/* bfqq is shared */
-	BFQ_BFQQ_FLAG_split_coop,	/* shared bfqq will be splitted */
-	BFQ_BFQQ_FLAG_some_coop_idle,   /* some cooperator is inactive */
-	BFQ_BFQQ_FLAG_just_split,	/* queue has just been split */
+	BFQ_BFQQ_FLAG_busy = 0,		/*  has requests or is under service */
+	BFQ_BFQQ_FLAG_wait_request,	/*  waiting for a request */
+	BFQ_BFQQ_FLAG_must_alloc,	/*  must be allowed rq alloc */
+	BFQ_BFQQ_FLAG_fifo_expire,	/*  FIFO checked in this slice */
+	BFQ_BFQQ_FLAG_idle_window,	/*  slice idling enabled */
+	BFQ_BFQQ_FLAG_prio_changed,	/*  task priority has changed */
+	BFQ_BFQQ_FLAG_sync,		/*  synchronous queue */
+	BFQ_BFQQ_FLAG_budget_new,	/*  no completion with this budget */
+	BFQ_BFQQ_FLAG_coop,		/*  bfqq is shared */
+	BFQ_BFQQ_FLAG_split_coop,	/*  shared bfqq will be splitted */
+	BFQ_BFQQ_FLAG_some_coop_idle,   /*  some cooperator is inactive */
+	BFQ_BFQQ_FLAG_just_split,	/*  queue has just been split */
 };
 
 #define BFQ_BFQQ_FNS(name)						\
@@ -418,23 +418,23 @@ BFQ_BFQQ_FNS(some_coop_idle);
 BFQ_BFQQ_FNS(just_split);
 #undef BFQ_BFQQ_FNS
 
-/* Logging facilities. */
+/*  Logging facilities. */
 #define bfq_log_bfqq(bfqd, bfqq, fmt, args...) \
 	blk_add_trace_msg((bfqd)->queue, "bfq%d " fmt, (bfqq)->pid, ##args)
 
 #define bfq_log(bfqd, fmt, args...) \
 	blk_add_trace_msg((bfqd)->queue, "bfq " fmt, ##args)
 
-/* Expiration reasons. */
+/*  Expiration reasons. */
 enum bfqq_expiration {
-	BFQ_BFQQ_TOO_IDLE = 0,		/* queue has been idling for too long */
-	BFQ_BFQQ_BUDGET_TIMEOUT,	/* budget took too long to be used */
-	BFQ_BFQQ_BUDGET_EXHAUSTED,	/* budget consumed */
-	BFQ_BFQQ_NO_MORE_REQUESTS,	/* the queue has no more requests */
+	BFQ_BFQQ_TOO_IDLE = 0,		/*  queue has been idling for too long */
+	BFQ_BFQQ_BUDGET_TIMEOUT,	/*  budget took too long to be used */
+	BFQ_BFQQ_BUDGET_EXHAUSTED,	/*  budget consumed */
+	BFQ_BFQQ_NO_MORE_REQUESTS,	/*  the queue has no more requests */
 };
 
 #ifdef CONFIG_CGROUP_BFQIO
-/**
+/* *
  * struct bfq_group - per (device, cgroup) data structure.
  * @entity: schedulable entity to insert into the parent group sched_data.
  * @sched_data: own sched_data, to contain child entities (they may be
@@ -477,7 +477,7 @@ struct bfq_group {
 	struct bfq_entity *my_entity;
 };
 
-/**
+/* *
  * struct bfqio_cgroup - bfq cgroup data structure.
  * @css: subsystem state for bfq in the containing cgroup.
  * @weight: cgroup weight.
@@ -551,7 +551,7 @@ static inline void *bfqd_dead_key(struct bfq_data *bfqd)
 	return (void *)(bfqd->cic_index << CIC_DEAD_INDEX_SHIFT | CIC_DEAD_KEY);
 }
 
-/**
+/* *
  * bfq_get_bfqd_locked - get a lock to a bfqd using a RCU protected pointer.
  * @ptr: a pointer to a bfqd.
  * @flags: storage for the flags to be saved.

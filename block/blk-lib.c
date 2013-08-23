@@ -1,4 +1,4 @@
-/*
+/* 
  * Functions related to generic helpers functions
  */
 #include <linux/kernel.h>

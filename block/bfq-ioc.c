@@ -1,4 +1,4 @@
-/*
+/* 
  * BFQ: I/O context handling.
  *
  * Based on ideas and code from CFQ:
@@ -10,7 +10,7 @@
  * Copyright (C) 2010 Paolo Valente <paolo.valente@unimore.it>
  */
 
-/**
+/* *
  * bfq_cic_free_rcu - deferred cic freeing.
  * @head: RCU head of the cic to free.
  *
@@ -43,7 +43,7 @@ static void bfq_cic_free(struct cfq_io_context *cic)
 	call_rcu(&cic->rcu_head, bfq_cic_free_rcu);
 }
 
-/**
+/* *
  * cic_free_func - disconnect a cic ready to be freed.
  * @ioc: the io_context @cic belongs to.
  * @cic: the cic to be freed.
@@ -71,7 +71,7 @@ static void cic_free_func(struct io_context *ioc, struct cfq_io_context *cic)
 
 static void bfq_free_io_context(struct io_context *ioc)
 {
-	/*
+	/* 
 	 * ioc->refcount is zero here, or we are called from elv_unregister(),
 	 * so no more cic's are allowed to be linked into this ioc.  So it
 	 * should be ok to iterate over the known list, we will see all cic's
@@ -80,7 +80,7 @@ static void bfq_free_io_context(struct io_context *ioc)
 	call_for_each_cic(ioc, cic_free_func);
 }
 
-/**
+/* *
  * __bfq_exit_single_io_context - deassociate @cic from any running task.
  * @bfqd: bfq_data on which @cic is valid.
  * @cic: the cic being exited.
@@ -98,13 +98,13 @@ static void __bfq_exit_single_io_context(struct bfq_data *bfqd,
 
 	list_del_init(&cic->queue_list);
 
-	/*
+	/* 
 	 * Make sure dead mark is seen for dead queues
 	 */
 	smp_wmb();
 	rcu_assign_pointer(cic->key, bfqd_dead_key(bfqd));
 
-	/*
+	/* 
 	 * No write-side locking as no task is using @ioc (they're exited
 	 * or bfqd is being deallocated.
 	 */
@@ -124,7 +124,7 @@ static void __bfq_exit_single_io_context(struct bfq_data *bfqd,
 
 	spin_lock(&bfqd->eqm_lock);
 	if (cic->cfqq[BLK_RW_SYNC] != NULL) {
-		/*
+		/* 
 		 * If the bic is using a shared queue, put the reference
 		 * taken on the io_context when the bic started using a
 		 * shared bfq_queue.
@@ -137,7 +137,7 @@ static void __bfq_exit_single_io_context(struct bfq_data *bfqd,
 	spin_unlock(&bfqd->eqm_lock);
 }
 
-/**
+/* *
  * bfq_exit_single_io_context - deassociate @cic from @ioc (unlocked version).
  * @ioc: the io_context @cic belongs to.
  * @cic: the cic being exited.
@@ -159,7 +159,7 @@ static void bfq_exit_single_io_context(struct io_context *ioc,
 	}
 }
 
-/**
+/* *
  * bfq_exit_io_context - deassociate @ioc from all cics it owns.
  * @ioc: the @ioc being exited.
  *
@@ -181,7 +181,7 @@ static struct cfq_io_context *bfq_alloc_io_context(struct bfq_data *bfqd,
 							bfqd->queue->node);
 	if (cic != NULL) {
 		cic->ttime.last_end_request = jiffies;
-		/*
+		/* 
 		 * A newly created cic indicates that the process has just
 		 * started doing I/O, and is probably mapping into memory its
 		 * executable and libraries: it definitely needs weight raising.
@@ -210,7 +210,7 @@ static struct cfq_io_context *bfq_alloc_io_context(struct bfq_data *bfqd,
 	return cic;
 }
 
-/**
+/* *
  * bfq_drop_dead_cic - free an exited cic.
  * @bfqd: bfq data for the device in use.
  * @ioc: io_context owning @cic.
@@ -230,7 +230,7 @@ static void bfq_drop_dead_cic(struct bfq_data *bfqd, struct io_context *ioc,
 
 	BUG_ON(ioc->ioc_data == cic);
 
-	/*
+	/* 
 	 * With shared I/O contexts two lookups may race and drop the
 	 * same cic more than one time: RCU guarantees that the storage
 	 * will not be freed too early, here we make sure that we do
@@ -246,7 +246,7 @@ static void bfq_drop_dead_cic(struct bfq_data *bfqd, struct io_context *ioc,
 	spin_unlock_irqrestore(&ioc->lock, flags);
 }
 
-/**
+/* *
  * bfq_cic_lookup - search into @ioc a cic associated to @bfqd.
  * @bfqd: the lookup key.
  * @ioc: the io_context of the process doing I/O.
@@ -266,7 +266,7 @@ static struct cfq_io_context *bfq_cic_lookup(struct bfq_data *bfqd,
 
 	rcu_read_lock();
 
-	/* We maintain a last-hit cache, to avoid browsing over the tree. */
+	/*  We maintain a last-hit cache, to avoid browsing over the tree. */
 	cic = rcu_dereference(ioc->ioc_data);
 	if (cic != NULL) {
 		k = rcu_dereference(cic->key);
@@ -300,7 +300,7 @@ out:
 	return cic;
 }
 
-/**
+/* *
  * bfq_cic_link - add @cic to @ioc.
  * @bfqd: bfq_data @cic refers to.
  * @ioc: io_context @cic belongs to.
@@ -322,7 +322,7 @@ static int bfq_cic_link(struct bfq_data *bfqd, struct io_context *ioc,
 	if (ret == 0) {
 		cic->ioc = ioc;
 
-		/* No write-side locking, cic is not published yet. */
+		/*  No write-side locking, cic is not published yet. */
 		rcu_assign_pointer(cic->key, bfqd);
 
 		spin_lock_irqsave(&ioc->lock, flags);
@@ -347,7 +347,7 @@ static int bfq_cic_link(struct bfq_data *bfqd, struct io_context *ioc,
 	return ret;
 }
 
-/**
+/* *
  * bfq_ioc_set_ioprio - signal a priority change to the cics belonging to @ioc.
  * @ioc: the io_context changing its priority.
  */
@@ -356,7 +356,7 @@ static inline void bfq_ioc_set_ioprio(struct io_context *ioc)
 	call_for_each_cic(ioc, bfq_changed_ioprio);
 }
 
-/**
+/* *
  * bfq_get_io_context - return the @cic associated to @bfqd in @ioc.
  * @bfqd: the search key.
  * @gfp_mask: the mask to use for cic allocation.
@@ -377,22 +377,22 @@ static struct cfq_io_context *bfq_get_io_context(struct bfq_data *bfqd,
 	if (ioc == NULL)
 		return NULL;
 
-	/* Lookup for an existing cic. */
+	/*  Lookup for an existing cic. */
 	cic = bfq_cic_lookup(bfqd, ioc);
 	if (cic != NULL)
 		goto out;
 
-	/* Alloc one if needed. */
+	/*  Alloc one if needed. */
 	cic = bfq_alloc_io_context(bfqd, gfp_mask);
 	if (cic == NULL)
 		goto err;
 
-	/* Link it into the ioc's radix tree and cic list. */
+	/*  Link it into the ioc's radix tree and cic list. */
 	if (bfq_cic_link(bfqd, ioc, cic, gfp_mask) != 0)
 		goto err_free;
 
 out:
-	/*
+	/* 
 	 * test_and_clear_bit() implies a memory barrier, paired with
 	 * the wmb() in fs/ioprio.c, so the value seen for ioprio is the
 	 * new one.

@@ -1,4 +1,4 @@
-/*
+/* 
  * BFQ: CGROUPS support.
  *
  * Based on ideas and code from CFQ:
@@ -36,7 +36,7 @@ static struct bfqio_cgroup *cgroup_to_bfqio(struct cgroup *cgroup)
 			    struct bfqio_cgroup, css);
 }
 
-/*
+/* 
  * Search the bfq_group for bfqd into the hash table (by now only a list)
  * of bgrp.  Must be called under rcu_read_lock().
  */
@@ -61,7 +61,7 @@ static inline void bfq_group_init_entity(struct bfqio_cgroup *bgrp,
 {
 	struct bfq_entity *entity = &bfqg->entity;
 
-	/*
+	/* 
 	 * If the weight of the entity has never been set via the sysfs
 	 * interface, then bgrp->weight == 0. In this case we initialize
 	 * the weight from the current ioprio value. Otherwise, the group
@@ -93,7 +93,7 @@ static inline void bfq_group_set_parent(struct bfq_group *bfqg,
 	entity->sched_data = &parent->sched_data;
 }
 
-/**
+/* *
  * bfq_group_chain_alloc - allocate a chain of groups.
  * @bfqd: queue descriptor.
  * @cgroup: the leaf cgroup this chain starts from.
@@ -113,7 +113,7 @@ static struct bfq_group *bfq_group_chain_alloc(struct bfq_data *bfqd,
 
 		bfqg = bfqio_lookup_group(bgrp, bfqd);
 		if (bfqg != NULL) {
-			/*
+			/* 
 			 * All the cgroups in the path from there to the
 			 * root must have a bfq_group for bfqd, so we don't
 			 * need any more allocations.
@@ -133,7 +133,7 @@ static struct bfq_group *bfq_group_chain_alloc(struct bfq_data *bfqd,
 			prev = leaf;
 		} else {
 			bfq_group_set_parent(prev, bfqg);
-			/*
+			/* 
 			 * Build a list of allocated nodes using the bfqd
 			 * filed, that is still unused and will be initialized
 			 * only after the node will be connected.
@@ -155,7 +155,7 @@ cleanup:
 	return NULL;
 }
 
-/**
+/* *
  * bfq_group_chain_link - link an allocatd group chain to a cgroup hierarchy.
  * @bfqd: the queue descriptor.
  * @cgroup: the leaf cgroup to start from.
@@ -206,7 +206,7 @@ static void bfq_group_chain_link(struct bfq_data *bfqd, struct cgroup *cgroup,
 	}
 }
 
-/**
+/* *
  * bfq_find_alloc_group - return the group associated to @bfqd in @cgroup.
  * @bfqd: queue descriptor.
  * @cgroup: cgroup being searched for.
@@ -244,7 +244,7 @@ static struct bfq_group *bfq_find_alloc_group(struct bfq_data *bfqd,
 	return bfqg;
 }
 
-/**
+/* *
  * bfq_bfqq_move - migrate @bfqq to @bfqg.
  * @bfqd: queue descriptor.
  * @bfqq: the queue to move.
@@ -279,7 +279,7 @@ static void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 	} else if (entity->on_st)
 		bfq_put_idle_entity(bfq_entity_service_tree(entity), entity);
 
-	/*
+	/* 
 	 * Here we use a reference to bfqg.  We don't need a refcounter
 	 * as the cgroup reference will not be dropped, so that its
 	 * destroy() callback will not be invoked.
@@ -294,7 +294,7 @@ static void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 		bfq_schedule_dispatch(bfqd);
 }
 
-/**
+/* *
  * __bfq_cic_change_cgroup - move @cic to @cgroup.
  * @bfqd: the queue descriptor.
  * @cic: the cic to move.
@@ -345,7 +345,7 @@ static struct bfq_group *__bfq_cic_change_cgroup(struct bfq_data *bfqd,
 	return bfqg;
 }
 
-/**
+/* *
  * bfq_cic_change_cgroup - move @cic to @cgroup.
  * @cic: the cic being migrated.
  * @cgroup: the destination cgroup.
@@ -368,7 +368,7 @@ static void bfq_cic_change_cgroup(struct cfq_io_context *cic,
 	}
 }
 
-/**
+/* *
  * bfq_cic_update_cgroup - update the cgroup of @cic.
  * @cic: the @cic to update.
  *
@@ -405,7 +405,7 @@ static struct bfq_group *bfq_cic_update_cgroup(struct cfq_io_context *cic)
 	return bfqg;
 }
 
-/**
+/* *
  * bfq_flush_idle_tree - deactivate any entity on the idle tree of @st.
  * @st: the service tree being flushed.
  */
@@ -417,7 +417,7 @@ static inline void bfq_flush_idle_tree(struct bfq_service_tree *st)
 		__bfq_deactivate_entity(entity, 0);
 }
 
-/**
+/* *
  * bfq_reparent_leaf_entity - move leaf entity to the root_group.
  * @bfqd: the device data structure with the root group.
  * @entity: the entity to move.
@@ -432,7 +432,7 @@ static inline void bfq_reparent_leaf_entity(struct bfq_data *bfqd,
 	return;
 }
 
-/**
+/* *
  * bfq_reparent_active_entities - move to the root group all active entities.
  * @bfqd: the device data structure with the root group.
  * @bfqg: the group to move from.
@@ -459,7 +459,7 @@ static inline void bfq_reparent_active_entities(struct bfq_data *bfqd,
 	return;
 }
 
-/**
+/* *
  * bfq_destroy_group - destroy @bfqg.
  * @bgrp: the bfqio_cgroup containing @bfqg.
  * @bfqg: the group being destroyed.
@@ -476,14 +476,14 @@ static void bfq_destroy_group(struct bfqio_cgroup *bgrp, struct bfq_group *bfqg)
 
 	hlist_del(&bfqg->group_node);
 
-	/*
+	/* 
 	 * Empty all service_trees belonging to this group before deactivating
 	 * the group itself.
 	 */
 	for (i = 0; i < BFQ_IOPRIO_CLASSES; i++) {
 		st = bfqg->sched_data.service_tree + i;
 
-		/*
+		/* 
 		 * The idle tree may still contain bfq_queues belonging
 		 * to exited task because they never migrated to a different
 		 * cgroup from the one being destroyed now.  Noone else
@@ -491,7 +491,7 @@ static void bfq_destroy_group(struct bfqio_cgroup *bgrp, struct bfq_group *bfqg)
 		 */
 		bfq_flush_idle_tree(st);
 
-		/*
+		/* 
 		 * It may happen that some queues are still active
 		 * (busy) upon group destruction (if the corresponding
 		 * processes have been forced to terminate). We move
@@ -514,7 +514,7 @@ static void bfq_destroy_group(struct bfqio_cgroup *bgrp, struct bfq_group *bfqg)
 	BUG_ON(bfqg->sched_data.next_active != NULL);
 	BUG_ON(bfqg->sched_data.active_entity != NULL);
 
-	/*
+	/* 
 	 * We may race with device destruction, take extra care when
 	 * dereferencing bfqg->bfqd.
 	 */
@@ -527,7 +527,7 @@ static void bfq_destroy_group(struct bfqio_cgroup *bgrp, struct bfq_group *bfqg)
 	}
 	BUG_ON(entity->tree != NULL);
 
-	/*
+	/* 
 	 * No need to defer the kfree() to the end of the RCU grace
 	 * period: we are called from the destroy() callback of our
 	 * cgroup, so we can be sure that noone is a) still using
@@ -545,7 +545,7 @@ static void bfq_end_raising_async(struct bfq_data *bfqd)
 		bfq_end_raising_async_queues(bfqd, bfqg);
 }
 
-/**
+/* *
  * bfq_disconnect_groups - diconnect @bfqd from all its groups.
  * @bfqd: the device descriptor being exited.
  *
@@ -564,7 +564,7 @@ static void bfq_disconnect_groups(struct bfq_data *bfqd)
 
 		__bfq_deactivate_entity(bfqg->my_entity, 0);
 
-		/*
+		/* 
 		 * Don't remove from the group hash, just set an
 		 * invalid key.  No lookups can race with the
 		 * assignment as bfqd is being destroyed; this
@@ -590,7 +590,7 @@ static inline void bfq_free_root_group(struct bfq_data *bfqd)
 	hlist_del_rcu(&bfqg->group_node);
 	spin_unlock_irq(&bgrp->lock);
 
-	/*
+	/* 
 	 * No need to synchronize_rcu() here: since the device is gone
 	 * there cannot be any read-side access to its root_group.
 	 */
@@ -665,7 +665,7 @@ static int bfqio_cgroup_##__VAR##_write(struct cgroup *cgroup,		\
 	spin_lock_irq(&bgrp->lock);					\
 	bgrp->__VAR = (unsigned short)val;				\
 	hlist_for_each_entry(bfqg, n, &bgrp->group_data, group_node) {	\
-		/*                                                      \
+		/*                                                       \
 		 * Setting the ioprio_changed flag of the entity        \
 		 * to 1 with new_##__VAR == ##__VAR would re-set        \
 		 * the value of the weight to its ioprio mapping.       \
@@ -733,7 +733,7 @@ static struct cgroup_subsys_state *bfqio_create(struct cgroup_subsys *subsys,
 	return &bgrp->css;
 }
 
-/*
+/* 
  * We cannot support shared io contexts, as we have no means to support
  * two tasks with the same ioc in two different groups without major rework
  * of the main cic/bfqq data structures.  By now we allow a task to change
@@ -747,11 +747,11 @@ static int bfqio_can_attach(struct cgroup_subsys *subsys, struct cgroup *cgroup,
 	struct io_context *ioc;
 	int ret = 0;
 
-	/* task_lock() is needed to avoid races with exit_io_context() */
+	/*  task_lock() is needed to avoid races with exit_io_context() */
 	task_lock(tsk);
 	ioc = tsk->io_context;
 	if (ioc != NULL && atomic_read(&ioc->nr_tasks) > 1)
-		/*
+		/* 
 		 * ioc == NULL means that the task is either too young or
 		 * exiting: if it has still no ioc the ioc can't be shared,
 		 * if the task is exiting the attach will fail anyway, no
@@ -795,7 +795,7 @@ static void bfqio_destroy(struct cgroup_subsys *subsys, struct cgroup *cgroup)
 	struct hlist_node *n, *tmp;
 	struct bfq_group *bfqg;
 
-	/*
+	/* 
 	 * Since we are destroying the cgroup, there are no more tasks
 	 * referencing it, and all the RCU grace periods that may have
 	 * referenced it are ended (as the destruction of the parent

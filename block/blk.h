@@ -1,10 +1,10 @@
 #ifndef BLK_INTERNAL_H
 #define BLK_INTERNAL_H
 
-/* Amount of time in which a process may batch requests */
+/*  Amount of time in which a process may batch requests */
 #define BLK_BATCH_TIME	(HZ/50UL)
 
-/* Number of requests a "batching" process may submit */
+/*  Number of requests a "batching" process may submit */
 #define BLK_BATCH_REQ	32
 
 extern struct kmem_cache *blk_requestq_cachep;
@@ -25,14 +25,15 @@ void blk_delete_timer(struct request *);
 void blk_add_timer(struct request *);
 void __generic_unplug_device(struct request_queue *);
 
-/*
+/* 
  * Internal atomic flags for request handling
  */
 enum rq_atomic_flags {
 	REQ_ATOM_COMPLETE = 0,
+	REQ_ATOM_URGENT = 1,
 };
 
-/*
+/* 
  * EH timer and IO completion will both attempt to 'grab' the request, make
  * sure that only one of them succeeds
  */
@@ -46,7 +47,17 @@ static inline void blk_clear_rq_complete(struct request *rq)
 	clear_bit(REQ_ATOM_COMPLETE, &rq->atomic_flags);
 }
 
-/*
+static inline int blk_mark_rq_urgent(struct request *rq)
+{
+	return test_and_set_bit(REQ_ATOM_URGENT, &rq->atomic_flags);
+}
+
+static inline void blk_clear_rq_urgent(struct request *rq)
+{
+	clear_bit(REQ_ATOM_URGENT, &rq->atomic_flags);
+}
+
+/* 
  * Internal elevator interface
  */
 #define ELV_ON_HASH(rq)		(!hlist_unhashed(&(rq)->hash))
@@ -64,7 +75,7 @@ static inline struct request *__elv_next_request(struct request_queue *q)
 			return rq;
 		}
 
-		/*
+		/* 
 		 * Flush request is running and flush request isn't queueable
 		 * in the drive, we can hold the queue till flush request is
 		 * finished. Even we don't do this, driver can't dispatch next
@@ -139,7 +150,7 @@ void elv_quiesce_start(struct request_queue *q);
 void elv_quiesce_end(struct request_queue *q);
 
 
-/*
+/* 
  * Return the threshold (number of used requests) at which the queue is
  * considered to be congested.  It include a little hysteresis to keep the
  * context switch rate down.
@@ -149,7 +160,7 @@ static inline int queue_congestion_on_threshold(struct request_queue *q)
 	return q->nr_congestion_on;
 }
 
-/*
+/* 
  * The threshold at which a queue is considered to be uncongested
  */
 static inline int queue_congestion_off_threshold(struct request_queue *q)
@@ -173,7 +184,7 @@ static inline int blk_cpu_to_group(int cpu)
 	return cpu;
 }
 
-/*
+/* 
  * Contribute to IO statistics IFF:
  *
  *	a) it's attached to a gendisk, and

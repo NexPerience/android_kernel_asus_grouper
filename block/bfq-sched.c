@@ -1,4 +1,4 @@
-/*
+/* 
  * BFQ: Hierarchical B-WF2Q+ scheduler.
  *
  * Based on ideas and code from CFQ:
@@ -32,7 +32,7 @@ static inline void bfq_update_budget(struct bfq_entity *next_active)
 	group_sd = next_active->sched_data;
 
 	bfqg = container_of(group_sd, struct bfq_group, sched_data);
-	/*
+	/* 
 	 * bfq_group's my_entity field is not NULL only if the group
 	 * is not the root group. We must not touch the root entity
 	 * as it must never become an active entity.
@@ -47,10 +47,10 @@ static int bfq_update_next_active(struct bfq_sched_data *sd)
 	struct bfq_entity *next_active;
 
 	if (sd->active_entity != NULL)
-		/* will update/requeue at the end of service */
+		/*  will update/requeue at the end of service */
 		return 0;
 
-	/*
+	/* 
 	 * NOTE: this can be improved in many ways, such as returning
 	 * 1 (and thus propagating upwards the update) only when the
 	 * budget changes, or caching the bfqq that will be scheduled
@@ -93,7 +93,7 @@ static inline void bfq_update_budget(struct bfq_entity *next_active)
 }
 #endif
 
-/*
+/* 
  * Shift for timestamp calculations.  This actually limits the maximum
  * service allowed in one timestamp delta (small shift values increase it),
  * the maximum total weight that can be used for the queues in the system
@@ -101,7 +101,7 @@ static inline void bfq_update_budget(struct bfq_entity *next_active)
  */
 #define WFQ_SERVICE_SHIFT	22
 
-/**
+/* *
  * bfq_gt - compare two timestamps.
  * @a: first ts.
  * @b: second ts.
@@ -126,7 +126,7 @@ static inline struct bfq_queue *bfq_entity_to_bfqq(struct bfq_entity *entity)
 }
 
 
-/**
+/* *
  * bfq_delta - map service into the virtual time domain.
  * @service: amount of service.
  * @weight: scale factor (weight of an entity or weight sum).
@@ -140,7 +140,7 @@ static inline u64 bfq_delta(unsigned long service,
 	return d;
 }
 
-/**
+/* *
  * bfq_calc_finish - assign the finish time to an entity.
  * @entity: the entity to act upon.
  * @service: the service to be charged to the entity.
@@ -166,7 +166,7 @@ static inline void bfq_calc_finish(struct bfq_entity *entity,
 	}
 }
 
-/**
+/* *
  * bfq_entity_of - get an entity from a node.
  * @node: the node field of the entity.
  *
@@ -185,7 +185,7 @@ static inline struct bfq_entity *bfq_entity_of(struct rb_node *node)
 	return entity;
 }
 
-/**
+/* *
  * bfq_extract - remove an entity from a tree.
  * @root: the tree root.
  * @entity: the entity to remove.
@@ -199,7 +199,7 @@ static inline void bfq_extract(struct rb_root *root,
 	rb_erase(&entity->rb_node, root);
 }
 
-/**
+/* *
  * bfq_idle_extract - extract an entity from the idle tree.
  * @st: the service tree of the owning @entity.
  * @entity: the entity being removed.
@@ -228,7 +228,7 @@ static void bfq_idle_extract(struct bfq_service_tree *st,
 		list_del(&bfqq->bfqq_list);
 }
 
-/**
+/* *
  * bfq_insert - generic tree insertion.
  * @root: tree root.
  * @entity: entity to insert.
@@ -260,7 +260,7 @@ static void bfq_insert(struct rb_root *root, struct bfq_entity *entity)
 	entity->tree = root;
 }
 
-/**
+/* *
  * bfq_update_min - update the min_start field of a entity.
  * @entity: the entity to update.
  * @node: one of its children.
@@ -282,7 +282,7 @@ static inline void bfq_update_min(struct bfq_entity *entity,
 	}
 }
 
-/**
+/* *
  * bfq_update_active_node - recalculate min_start.
  * @node: the node to update.
  *
@@ -299,7 +299,7 @@ static inline void bfq_update_active_node(struct rb_node *node)
 	bfq_update_min(entity, node->rb_left);
 }
 
-/**
+/* *
  * bfq_update_active_tree - update min_start for the whole active tree.
  * @node: the starting node.
  *
@@ -329,7 +329,7 @@ up:
 	goto up;
 }
 
-/**
+/* *
  * bfq_active_insert - insert an entity in the active tree of its group/device.
  * @st: the service tree of the entity.
  * @entity: the entity being inserted.
@@ -358,7 +358,7 @@ static void bfq_active_insert(struct bfq_service_tree *st,
 		list_add(&bfqq->bfqq_list, &bfqq->bfqd->active_list);
 }
 
-/**
+/* *
  * bfq_ioprio_to_weight - calc a weight from an ioprio.
  * @ioprio: the ioprio value to convert.
  */
@@ -368,7 +368,7 @@ static unsigned short bfq_ioprio_to_weight(int ioprio)
 	return IOPRIO_BE_NR - ioprio;
 }
 
-/**
+/* *
  * bfq_weight_to_ioprio - calc an ioprio from a weight.
  * @weight: the weight value to convert.
  *
@@ -393,7 +393,7 @@ static inline void bfq_get_entity(struct bfq_entity *entity)
 	}
 }
 
-/**
+/* *
  * bfq_find_deepest - find the deepest node that an extraction can modify.
  * @node: the node being removed.
  *
@@ -423,7 +423,7 @@ static struct rb_node *bfq_find_deepest(struct rb_node *node)
 	return deepest;
 }
 
-/**
+/* *
  * bfq_active_extract - remove an entity from the active tree.
  * @st: the service_tree containing the tree.
  * @entity: the entity being removed.
@@ -444,7 +444,7 @@ static void bfq_active_extract(struct bfq_service_tree *st,
 		list_del(&bfqq->bfqq_list);
 }
 
-/**
+/* *
  * bfq_idle_insert - insert an entity into the idle tree.
  * @st: the service tree containing the tree.
  * @entity: the entity to insert.
@@ -467,7 +467,7 @@ static void bfq_idle_insert(struct bfq_service_tree *st,
 		list_add(&bfqq->bfqq_list, &bfqq->bfqd->idle_list);
 }
 
-/**
+/* *
  * bfq_forget_entity - remove an entity from the wfq trees.
  * @st: the service tree.
  * @entity: the entity being removed.
@@ -492,7 +492,7 @@ static void bfq_forget_entity(struct bfq_service_tree *st,
 	}
 }
 
-/**
+/* *
  * bfq_put_idle_entity - release the idle tree ref of an entity.
  * @st: service tree for the entity.
  * @entity: the entity being released.
@@ -504,7 +504,7 @@ static void bfq_put_idle_entity(struct bfq_service_tree *st,
 	bfq_forget_entity(st, entity);
 }
 
-/**
+/* *
  * bfq_forget_idle - update the idle tree if necessary.
  * @st: the service tree to act upon.
  *
@@ -518,7 +518,7 @@ static void bfq_forget_idle(struct bfq_service_tree *st)
 
 	if (RB_EMPTY_ROOT(&st->active) && last_idle != NULL &&
 	    !bfq_gt(last_idle->finish, st->vtime)) {
-		/*
+		/* 
 		 * Forget the whole idle tree, increasing the vtime past
 		 * the last finish time of idle entities.
 		 */
@@ -556,7 +556,7 @@ __bfq_entity_update_weight_prio(struct bfq_service_tree *old_st,
 		entity->ioprio_class = entity->new_ioprio_class;
 		entity->ioprio_changed = 0;
 
-		/*
+		/* 
 		 * NOTE: here we may be changing the weight too early,
 		 * this will cause unfairness.  The correct approach
 		 * would have required additional complexity to defer
@@ -575,7 +575,7 @@ __bfq_entity_update_weight_prio(struct bfq_service_tree *old_st,
 	return new_st;
 }
 
-/**
+/* *
  * bfq_bfqq_served - update the scheduler status after selection for service.
  * @bfqq: the queue being served.
  * @served: bytes to transfer.
@@ -602,7 +602,7 @@ static void bfq_bfqq_served(struct bfq_queue *bfqq, unsigned long served)
 	bfq_log_bfqq(bfqq->bfqd, bfqq, "bfqq_served %lu secs", served);
 }
 
-/**
+/* *
  * bfq_bfqq_charge_full_budget - set the service to the entity budget.
  * @bfqq: the queue that needs a service update.
  *
@@ -621,7 +621,7 @@ static inline void bfq_bfqq_charge_full_budget(struct bfq_queue *bfqq)
 	bfq_bfqq_served(bfqq, entity->budget - entity->service);
 }
 
-/**
+/* *
  * __bfq_activate_entity - activate an entity.
  * @entity: the entity being activated.
  *
@@ -638,7 +638,7 @@ static void __bfq_activate_entity(struct bfq_entity *entity)
 
 	if (entity == sd->active_entity) {
 		BUG_ON(entity->tree != NULL);
-		/*
+		/* 
 		 * If we are requeueing the current entity we have
 		 * to take care of not charging to it service it has
 		 * not received.
@@ -647,14 +647,14 @@ static void __bfq_activate_entity(struct bfq_entity *entity)
 		entity->start = entity->finish;
 		sd->active_entity = NULL;
 	} else if (entity->tree == &st->active) {
-		/*
+		/* 
 		 * Requeueing an entity due to a change of some
 		 * next_active entity below it.  We reuse the old
 		 * start time.
 		 */
 		bfq_active_extract(st, entity);
 	} else if (entity->tree == &st->idle) {
-		/*
+		/* 
 		 * Must be on the idle tree, bfq_idle_extract() will
 		 * check for that.
 		 */
@@ -662,7 +662,7 @@ static void __bfq_activate_entity(struct bfq_entity *entity)
 		entity->start = bfq_gt(st->vtime, entity->finish) ?
 				       st->vtime : entity->finish;
 	} else {
-		/*
+		/* 
 		 * The finish time of the entity may be invalid, and
 		 * it is in the past for sure, otherwise the queue
 		 * would have been on the idle tree.
@@ -680,7 +680,7 @@ static void __bfq_activate_entity(struct bfq_entity *entity)
 	bfq_active_insert(st, entity);
 }
 
-/**
+/* *
  * bfq_activate_entity - activate an entity and its ancestors if necessary.
  * @entity: the entity to activate.
  *
@@ -695,7 +695,7 @@ static void bfq_activate_entity(struct bfq_entity *entity)
 
 		sd = entity->sched_data;
 		if (!bfq_update_next_active(sd))
-			/*
+			/* 
 			 * No need to propagate the activation to the
 			 * upper entities, as they will be updated when
 			 * the active entity is rescheduled.
@@ -704,7 +704,7 @@ static void bfq_activate_entity(struct bfq_entity *entity)
 	}
 }
 
-/**
+/* *
  * __bfq_deactivate_entity - deactivate an entity from its service tree.
  * @entity: the entity to deactivate.
  * @requeue: if false, the entity will not be put into the idle tree.
@@ -754,7 +754,7 @@ static int __bfq_deactivate_entity(struct bfq_entity *entity, int requeue)
 	return ret;
 }
 
-/**
+/* *
  * bfq_deactivate_entity - deactivate an entity.
  * @entity: the entity to deactivate.
  * @requeue: true if the entity can be put on the idle tree
@@ -768,7 +768,7 @@ static void bfq_deactivate_entity(struct bfq_entity *entity, int requeue)
 		sd = entity->sched_data;
 
 		if (!__bfq_deactivate_entity(entity, requeue))
-			/*
+			/* 
 			 * The parent entity is still backlogged, and
 			 * we don't need to update it as it is still
 			 * under service.
@@ -776,14 +776,14 @@ static void bfq_deactivate_entity(struct bfq_entity *entity, int requeue)
 			break;
 
 		if (sd->next_active != NULL)
-			/*
+			/* 
 			 * The parent entity is still backlogged and
 			 * the budgets on the path towards the root
 			 * need to be updated.
 			 */
 			goto update;
 
-		/*
+		/* 
 		 * If we reach there the parent is no more backlogged and
 		 * we want to propagate the dequeue upwards.
 		 */
@@ -803,7 +803,7 @@ update:
 	}
 }
 
-/**
+/* *
  * bfq_update_vtime - update vtime if necessary.
  * @st: the service tree to act upon.
  *
@@ -828,7 +828,7 @@ static void bfq_update_vtime(struct bfq_service_tree *st)
 	}
 }
 
-/**
+/* *
  * bfq_first_active - find the eligible entity with the smallest finish time
  * @st: the service tree to select from.
  *
@@ -868,7 +868,7 @@ left:
 	return first;
 }
 
-/**
+/* *
  * __bfq_lookup_next_entity - return the first eligible entity in @st.
  * @st: the service tree.
  *
@@ -887,7 +887,7 @@ static struct bfq_entity *__bfq_lookup_next_entity(struct bfq_service_tree *st,
 	entity = bfq_first_active_entity(st);
 	BUG_ON(bfq_gt(entity->start, st->vtime));
 
-	/*
+	/* 
 	 * If the chosen entity does not match with the sched_data's
 	 * next_active and we are forcedly serving the IDLE priority
 	 * class tree, bubble up budget update.
@@ -901,7 +901,7 @@ static struct bfq_entity *__bfq_lookup_next_entity(struct bfq_service_tree *st,
 	return entity;
 }
 
-/**
+/* *
  * bfq_lookup_next_entity - return the first eligible entity in @sd.
  * @sd: the sched_data.
  * @extract: if true the returned entity will be also extracted from @sd.
@@ -947,7 +947,7 @@ static struct bfq_entity *bfq_lookup_next_entity(struct bfq_sched_data *sd,
 	return entity;
 }
 
-/*
+/* 
  * Get next queue for service.
  */
 static struct bfq_queue *bfq_get_next_queue(struct bfq_data *bfqd)
@@ -1003,7 +1003,7 @@ static void bfq_activate_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq)
 	bfq_activate_entity(entity);
 }
 
-/*
+/* 
  * Called when the bfqq no longer has requests pending, remove it from
  * the service tree.
  */
@@ -1023,7 +1023,7 @@ static void bfq_del_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 	bfq_deactivate_bfqq(bfqd, bfqq, requeue);
 }
 
-/*
+/* 
  * Called when an inactive queue receives a new request.
  */
 static void bfq_add_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq)

@@ -1,4 +1,4 @@
-/*
+/* 
  * Functions related to softirq rq completions
  */
 #include <linux/kernel.h>

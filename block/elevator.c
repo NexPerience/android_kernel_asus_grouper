@@ -1,4 +1,4 @@
-/*
+/* 
  *  Block device elevator/IO-scheduler.
  *
  *  Copyright (C) 2000 Andrea Arcangeli <andrea@suse.de> SuSE
@@ -43,7 +43,7 @@
 static DEFINE_SPINLOCK(elv_list_lock);
 static LIST_HEAD(elv_list);
 
-/*
+/* 
  * Merge hash stuff.
  */
 static const int elv_hash_shift = 6;
@@ -53,7 +53,7 @@ static const int elv_hash_shift = 6;
 #define ELV_HASH_ENTRIES	(1 << elv_hash_shift)
 #define rq_hash_key(rq)		(blk_rq_pos(rq) + blk_rq_sectors(rq))
 
-/*
+/* 
  * Query io scheduler to see if the current process issuing bio may be
  * merged with rq.
  */
@@ -68,7 +68,7 @@ static int elv_iosched_allow_merge(struct request *rq, struct bio *bio)
 	return 1;
 }
 
-/*
+/* 
  * can we safely merge with this request?
  */
 int elv_rq_merge_ok(struct request *rq, struct bio *bio)
@@ -76,31 +76,31 @@ int elv_rq_merge_ok(struct request *rq, struct bio *bio)
 	if (!rq_mergeable(rq))
 		return 0;
 
-	/*
+	/* 
 	 * Don't merge file system requests and discard requests
 	 */
 	if ((bio->bi_rw & REQ_DISCARD) != (rq->bio->bi_rw & REQ_DISCARD))
 		return 0;
 
-	/*
+	/* 
 	 * Don't merge discard requests and secure discard requests
 	 */
 	if ((bio->bi_rw & REQ_SECURE) != (rq->bio->bi_rw & REQ_SECURE))
 		return 0;
 
-	/*
+	/* 
 	 * different data direction or already started, don't merge
 	 */
 	if (bio_data_dir(bio) != rq_data_dir(rq))
 		return 0;
 
-	/*
+	/* 
 	 * must be same device and not a special request
 	 */
 	if (rq->rq_disk != bio->bi_bdev->bd_disk || rq->special)
 		return 0;
 
-	/*
+	/* 
 	 * only merge integrity protected bio into ditto rq
 	 */
 	if (bio_integrity(bio) != blk_integrity_rq(rq))
@@ -117,7 +117,7 @@ int elv_try_merge(struct request *__rq, struct bio *bio)
 {
 	int ret = ELEVATOR_NO_MERGE;
 
-	/*
+	/* 
 	 * we can merge and sequence is ok, check if it's possible
 	 */
 	if (elv_rq_merge_ok(__rq, bio)) {
@@ -186,7 +186,7 @@ static char chosen_elevator[16];
 
 static int __init elevator_setup(char *str)
 {
-	/*
+	/* 
 	 * Be backwards-compatible with previous kernels, so users
 	 * won't get the wrong elevator.
 	 */
@@ -349,7 +349,7 @@ static struct request *elv_rqhash_find(struct request_queue *q, sector_t offset)
 	return NULL;
 }
 
-/*
+/* 
  * RB-tree support functions for inserting/lookup/removal of requests
  * in a sorted RB tree.
  */
@@ -402,7 +402,7 @@ struct request *elv_rb_find(struct rb_root *root, sector_t sector)
 }
 EXPORT_SYMBOL(elv_rb_find);
 
-/*
+/* 
  * Insert rq into dispatch queue of q.  Queue lock must be held on
  * entry.  rq is sort instead into the dispatch queue. To be used by
  * specific elevators.
@@ -447,7 +447,7 @@ void elv_dispatch_sort(struct request_queue *q, struct request *rq)
 }
 EXPORT_SYMBOL(elv_dispatch_sort);
 
-/*
+/* 
  * Insert rq into dispatch queue of q.  Queue lock must be held on
  * entry.  rq is added to the back of the dispatch queue. To be used by
  * specific elevators.
@@ -473,7 +473,7 @@ int elv_merge(struct request_queue *q, struct request **req, struct bio *bio)
 	struct request *__rq;
 	int ret;
 
-	/*
+	/* 
 	 * Levels of merges:
 	 * 	nomerges:  No merges at all attempted
 	 * 	noxmerges: Only simple one-hit cache try
@@ -482,7 +482,7 @@ int elv_merge(struct request_queue *q, struct request **req, struct bio *bio)
 	if (blk_queue_nomerges(q))
 		return ELEVATOR_NO_MERGE;
 
-	/*
+	/* 
 	 * First try one-hit cache.
 	 */
 	if (q->last_merge) {
@@ -496,7 +496,7 @@ int elv_merge(struct request_queue *q, struct request **req, struct bio *bio)
 	if (blk_queue_noxmerges(q))
 		return ELEVATOR_NO_MERGE;
 
-	/*
+	/* 
 	 * See if our hash lookup can find a potential backmerge.
 	 */
 	__rq = elv_rqhash_find(q, bio->bi_sector);
@@ -511,7 +511,7 @@ int elv_merge(struct request_queue *q, struct request **req, struct bio *bio)
 	return ELEVATOR_NO_MERGE;
 }
 
-/*
+/* 
  * Attempt to do an insertion back merge. Only check for the case where
  * we can append 'rq' to an existing request, so we can throw 'rq' away
  * afterwards.
@@ -526,7 +526,7 @@ static bool elv_attempt_insert_merge(struct request_queue *q,
 	if (blk_queue_nomerges(q))
 		return false;
 
-	/*
+	/* 
 	 * First try one-hit cache.
 	 */
 	if (q->last_merge && blk_attempt_req_merge(q, q->last_merge, rq))
@@ -535,7 +535,7 @@ static bool elv_attempt_insert_merge(struct request_queue *q,
 	if (blk_queue_noxmerges(q))
 		return false;
 
-	/*
+	/* 
 	 * See if our hash lookup can find a potential backmerge.
 	 */
 	__rq = elv_rqhash_find(q, blk_rq_pos(rq));
@@ -588,7 +588,7 @@ void elv_bio_merged(struct request_queue *q, struct request *rq,
 
 void elv_requeue_request(struct request_queue *q, struct request *rq)
 {
-	/*
+	/* 
 	 * it already went through dequeue, we need to decrement the
 	 * in_flight count again
 	 */
@@ -617,7 +617,7 @@ void elv_drain_elevator(struct request_queue *q)
 	}
 }
 
-/*
+/* 
  * Call with queue lock held, interrupts disabled
  */
 void elv_quiesce_start(struct request_queue *q)
@@ -627,7 +627,7 @@ void elv_quiesce_start(struct request_queue *q)
 
 	queue_flag_set(QUEUE_FLAG_ELVSWITCH, q);
 
-	/*
+	/* 
 	 * make sure we don't have any requests in flight
 	 */
 	elv_drain_elevator(q);
@@ -652,7 +652,7 @@ void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 	rq->q = q;
 
 	if (rq->cmd_flags & REQ_SOFTBARRIER) {
-		/* barriers are scheduling boundary, update end_sector */
+		/*  barriers are scheduling boundary, update end_sector */
 		if (rq->cmd_type == REQ_TYPE_FS ||
 		    (rq->cmd_flags & REQ_DISCARD)) {
 			q->end_sector = rq_end_sector(rq);
@@ -674,7 +674,7 @@ void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 		rq->cmd_flags |= REQ_SOFTBARRIER;
 		elv_drain_elevator(q);
 		list_add_tail(&rq->queuelist, &q->queue_head);
-		/*
+		/* 
 		 * We kick the queue here for the following reasons.
 		 * - The elevator might have returned NULL previously
 		 *   to delay requests and returned them now.  As the
@@ -688,7 +688,7 @@ void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 		break;
 
 	case ELEVATOR_INSERT_SORT_MERGE:
-		/*
+		/* 
 		 * If we succeed in merging this request with one in the
 		 * queue already, we are done - rq has now been freed,
 		 * so no need to do anything further.
@@ -706,7 +706,7 @@ void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 				q->last_merge = rq;
 		}
 
-		/*
+		/* 
 		 * Some ioscheds (cfq) run q->request_fn directly, so
 		 * rq cannot be accessed after calling
 		 * elevator_add_req_fn.
@@ -793,7 +793,7 @@ void elv_abort_queue(struct request_queue *q)
 		rq = list_entry_rq(q->queue_head.next);
 		rq->cmd_flags |= REQ_QUIET;
 		trace_block_rq_abort(q, rq);
-		/*
+		/* 
 		 * Mark this request as started so we don't trigger
 		 * any debug logic in the end I/O path.
 		 */
@@ -807,7 +807,7 @@ void elv_completed_request(struct request_queue *q, struct request *rq)
 {
 	struct elevator_queue *e = q->elevator;
 
-	/*
+	/* 
 	 * request is released from the driver, io must be done
 	 */
 	if (blk_account_rq(rq)) {
@@ -924,7 +924,7 @@ void elv_unregister(struct elevator_type *e)
 {
 	struct task_struct *g, *p;
 
-	/*
+	/* 
 	 * Iterate every thread in the process to remove the io contexts.
 	 */
 	if (e->ops.trim) {
@@ -944,7 +944,7 @@ void elv_unregister(struct elevator_type *e)
 }
 EXPORT_SYMBOL_GPL(elv_unregister);
 
-/*
+/* 
  * switch to new_e io scheduler. be careful not to introduce deadlocks -
  * we don't free the old io scheduler, before we have allocated what we
  * need for the new one. this way we have a chance of going back to the old
@@ -956,7 +956,7 @@ static int elevator_switch(struct request_queue *q, struct elevator_type *new_e)
 	void *data;
 	int err;
 
-	/*
+	/* 
 	 * Allocate new elevator
 	 */
 	e = elevator_alloc(q, new_e);
@@ -969,18 +969,18 @@ static int elevator_switch(struct request_queue *q, struct elevator_type *new_e)
 		return -ENOMEM;
 	}
 
-	/*
+	/* 
 	 * Turn on BYPASS and drain all requests w/ elevator private data
 	 */
 	spin_lock_irq(q->queue_lock);
 	elv_quiesce_start(q);
 
-	/*
+	/* 
 	 * Remember old elevator.
 	 */
 	old_elevator = q->elevator;
 
-	/*
+	/* 
 	 * attach and start new elevator
 	 */
 	elevator_attach(q, e, data);
@@ -995,7 +995,7 @@ static int elevator_switch(struct request_queue *q, struct elevator_type *new_e)
 			goto fail_register;
 	}
 
-	/*
+	/* 
 	 * finally exit old elevator and turn off BYPASS.
 	 */
 	elevator_exit(old_elevator);
@@ -1008,7 +1008,7 @@ static int elevator_switch(struct request_queue *q, struct elevator_type *new_e)
 	return 0;
 
 fail_register:
-	/*
+	/* 
 	 * switch failed, exit the new io scheduler and reattach the old
 	 * one again (along with re-adding the sysfs dir)
 	 */
@@ -1023,7 +1023,7 @@ fail_register:
 	return err;
 }
 
-/*
+/* 
  * Switch this queue to the given IO scheduler.
  */
 int elevator_change(struct request_queue *q, const char *name)

@@ -1,4 +1,4 @@
-/*
+/* 
  * Functions related to segment and merge handling
  */
 #include <linux/kernel.h>

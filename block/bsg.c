@@ -1,4 +1,4 @@
-/*
+/* 
  * bsg.c - block layer implementation of the sg v4 interface
  *
  * Copyright (C) 2004 Jens Axboe <axboe@suse.de> SUSE Labs
