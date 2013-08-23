@@ -1,4 +1,4 @@
-/*
+/* 
  * arch/arm/mach-tegra/board-grouper-panel.c
  *
  * Copyright (c) 2012, NVIDIA Corporation.

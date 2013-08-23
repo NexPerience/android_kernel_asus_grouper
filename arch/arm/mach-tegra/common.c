@@ -1,4 +1,4 @@
-/*
+/* 
  * arch/arm/mach-tegra/common.c
  *
  * Copyright (C) 2010 Google, Inc.
