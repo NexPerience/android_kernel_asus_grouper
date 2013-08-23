@@ -106,6 +106,10 @@ config LZO_COMPRESS
 config LZO_DECOMPRESS
 	tristate
 
+config LZ4_DECOMPRESS
+  tristate
+
+
 source "lib/xz/Kconfig"
 
 #
@@ -129,6 +133,11 @@ config DECOMPRESS_XZ
 config DECOMPRESS_LZO
 	select LZO_DECOMPRESS
 	tristate
+
+config DECOMPRESS_LZ4
+  select LZ4_DECOMPRESS
+  tristate
+
 
 #
 # Generic allocator support is selected if needed
@@ -279,4 +288,11 @@ config CORDIC
 config LLIST
 	bool
 
+config FRANDOM_DEV
+  tristate "Fast pseudo-random generator."
+  help
+    Frandom generates random numbers for the Linux kernel almost 50x
+    faster than urandom using far less of the entropy pool than 
+    urandom.
+ 
 endmenu
