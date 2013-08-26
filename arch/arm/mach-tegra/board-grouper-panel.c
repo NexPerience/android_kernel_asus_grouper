@@ -157,7 +157,7 @@ static int grouper_backlight_notify(struct device *unused, int brightness)
 	brightness = (brightness * cur_sd_brightness) / 255;
 
 	/* Apply any backlight response curve */
-  if (min_backlight < 10)
+  if (min_backlight < 11)
     min_backlight = 10;
   if (max_backlight > 255)
     max_backlight = 255;
