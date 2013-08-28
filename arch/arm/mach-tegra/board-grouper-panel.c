@@ -158,7 +158,7 @@ static int grouper_backlight_notify(struct device *unused, int brightness)
 
 	/* Apply any backlight response curve */
   if (min_backlight < 11)
-    min_backlight = 10;
+    min_backlight = 11;/* CHANGED TO 11 , 10 cause screen flickering*/
   if (max_backlight > 255)
     max_backlight = 255;
   if (brightness > 255) { 
