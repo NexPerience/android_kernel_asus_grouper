@@ -1547,7 +1547,7 @@ debug_pagealloc_enabled = 1;
 }
 #ifdef CONFIG_HIBERNATION
 extern bool kernel_page_present(struct page *page);
-#endif /* CONFIG_HIBERNATION */
+#endif /* CONFIG_HIBERNATION  */
 #else
 static inline void
 kernel_map_pages(struct page *page, int numpages, int enable) {}
