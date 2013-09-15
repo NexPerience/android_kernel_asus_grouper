@@ -311,20 +311,12 @@ choice
 
 	  If you are not sure what you are doing, leave this
 	  option alone!
-	config GPU_OC_332
-		bool "332 MHz"
 	config GPU_OC_446
 		bool "446 MHz"
 	config GPU_OC_484
 		bool "484 MHz"
 	config GPU_OC_520
 		bool "520 MHz"
-	config GPU_OC_600
-		bool "600 MHz"
-	config GPU_OC_666
-		bool "666 MHz"
-	config GPU_OC_700
-		bool "700 MHz"
 
 endchoice
 
